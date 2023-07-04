@@ -1,0 +1,18 @@
+{
+    "name": "radomirrman/ukol_2",
+    "autoload": {
+        "psr-4": {
+            "Radomirrman\\Ukol2\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "radomirman",
+            "email": "90645829+radomirman@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "tracy/tracy": "^2.10",
+        "dibi/dibi": "^4.2"
+    }
+}
