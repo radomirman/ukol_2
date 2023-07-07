@@ -1,5 +1,32 @@
 <?php require_once "bootstrap.php";?>
+<?php
+$content = file_get_contents("https://www.3it.cz/test/data/json");
+if($content){
+    $data = json_decode($content,true);
+    function sortData($first,$second)
+    {
+        return strtotime($first['date']) - strtotime($second['date']);
+    }
 
+    //usort($data,'sortData');
+}
+if(isset($_POST['import'])){
+
+
+    $_SESSION['message'] = [];
+    foreach ($data as $item)
+    {
+        unset($item['id']);
+        $insert = $dibi->query("INSERT INTO zaznamy",$item);
+
+
+    }
+    if($insert){
+        $_SESSION['message']['text'] = "Data byla úspěšně vložena do databáze.";
+        $_SESSION['message']['expire'] = date("Y-m-d H:i:s");
+        header("location: ./");
+    }
+}?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,20 +42,14 @@
     </style>
 </head>
 <body>
-<?php
-    $content = file_get_contents("https://www.3it.cz/test/data/json");
-    if($content){
-        $data = json_decode($content,true);
-        function sortData($first,$second)
-        {
-            return strtotime($first['date']) - strtotime($second['date']);
-        }
-
-        //usort($data,'sortData');
-    }
-?>
+<?php if(isset($_SESSION['message'])):?> <?php echo htmlspecialchars($_SESSION['message']['text'])?> <?php endif;?>
 <div class="container">
     <h1 class="text-center">Seznam osob</h1>
+    <section class="row">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'],ENT_QUOTES)?>">
+            <input type="submit" name="import" class="btn btn-primary" value="Importovat data">
+        </form>
+    </section>
     <section class="row">
         <table class="table table-bordered">
             <thead class="text-center">
@@ -54,22 +75,6 @@
 </div>
 </body>
 </html>
-<?php
-
-foreach ($data as $item)
-{
-    unset($item['id']);
-    $insert = $dibi->query("INSERT INTO zaznamy",$item);
-
-
-}
-if($insert){
-    echo "Data byla uložena do databáze. ";
-}
-
-
-
-?>
 <script>
     $(this).ready(function (){
         $('.item').click(function (){
@@ -77,3 +82,11 @@ if($insert){
         });
     });
 </script>
+
+<?php
+if(isset($_SESSION['message'])){
+    if($_SESSION['message']['expire'] < date("Y-m-d H:i:s")){
+        unset($_SESSION['message']);
+    }
+}
+?>
