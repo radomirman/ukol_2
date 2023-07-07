@@ -26,6 +26,11 @@ if(isset($_POST['import'])){
         $_SESSION['message']['expire'] = date("Y-m-d H:i:s");
         header("location: ./");
     }
+    else{
+        $_SESSION['message']['text'] = "Došlo k chybě při ukládní dat.";
+        $_SESSION['message']['expire'] = date("Y-m-d H:i:s");
+        header("location: ./");
+    }
 }?>
 <!DOCTYPE html>
 <html lang="en">
